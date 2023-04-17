@@ -20,13 +20,65 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(isDirect = true) {
+    this.letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    this.isDirect = isDirect;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  transformText(text, key, encrypt) {
+    if (!text || !key) {
+      throw new Error('Incorrect arguments!');
+    }
+    let res = '';
+    key = key.toUpperCase().replace(/[^A-Z]/g, '');
+
+
+    text = text.toUpperCase().replace(/[^A-Z]/g, '');
+
+
+
+    for (let i = 0, j = 0; i < text.length; i++) {
+
+      const symhol = text.charAt(i);
+
+
+      if (this.letters.indexOf(symhol) === -1) {
+        res += symhol;
+        continue;
+
+      }
+      const keySymhol = key.charAt(j % key.length);
+
+      const shift = this.letters.indexOf(keySymhol);
+
+      const symholIndex = this.letters.indexOf(symhol);
+
+      const shiftedIndex = encrypt
+        ? (symholIndex + shift) % this.letters.length
+        : (symholIndex - shift + this.letters.length) % this.letters.length;
+      const shiftedChar = this.letters.charAt(shiftedIndex);
+      res += shiftedChar;
+      j++;
+    }
+    return res;
+  }
+
+  encrypt(message, key) {
+    const encrypt = this.transformText(message, key, true);
+    if (this.isDirect) {
+      return encrypt;
+    } else {
+      return encrypt.split('').reverse().join('');
+    }
+  }
+
+  decrypt(encryptedMessage, key) {
+    const decrypt = this.transformText(encryptedMessage, key, false);
+    if (this.isDirect) {
+      return decrypt;
+    } else {
+      return decrypt.split('').reverse().join('');
+    };
   }
 }
 

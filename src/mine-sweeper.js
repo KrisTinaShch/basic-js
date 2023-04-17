@@ -16,16 +16,46 @@ const { NotImplementedError } = require('../extensions/index.js');
  *  [false, false, false]
  * ]
  *
- * The result should be following:
+ * The res should be following:
  * [
  *  [1, 2, 1],
  *  [2, 1, 1],
  *  [1, 1, 1]
  * ]
  */
-function minesweeper(/* matrix */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function minesweeper(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const mines = [];
+
+  for (let r = 0; r < rows; r++) {
+    const rowMines = [];
+
+    for (let c = 0; c < cols; c++) {
+      let count = 0;
+
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) {
+            continue;
+          }
+
+          const neighborR = r + i;
+          const neighborC = c + j;
+
+          if (neighborR >= 0 && neighborR < rows && neighborC >= 0 && neighborC < cols && matrix[neighborR][neighborC]) {
+            count++;
+          }
+        }
+      }
+
+      rowMines.push(count);
+    }
+
+    mines.push(rowMines);
+  }
+
+  return mines;
 }
 
 module.exports = {
